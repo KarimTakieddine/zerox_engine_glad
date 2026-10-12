@@ -8,10 +8,8 @@ set(SRC_DIR src)
 
 Project(${PROJECT_NAME})
 
-list(APPEND SOURCES
-    ${SRC_DIR}/glad.c)
+list(APPEND SOURCES ${SRC_DIR}/glad.c)
 
-add_library(${PROJECT_NAME} SHARED ${SOURCES})
+add_library(${PROJECT_NAME} STATIC ${SOURCES})
 
-target_include_directories(${PROJECT_NAME} PRIVATE
-    ${INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIR})

@@ -8,7 +8,7 @@ set(SRC_DIR src)
 
 Project(${PROJECT_NAME})
 
-list(APPEND SOURCES ${SRC_DIR}/glad.c)
+list(APPEND SOURCES ${SRC_DIR}/gl.c)
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES})
 

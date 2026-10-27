@@ -26,10 +26,19 @@ extern "C" {
 int GLAD_WGL_VERSION_1_0 = 0;
 int GLAD_WGL_ARB_extensions_string = 0;
 int GLAD_WGL_EXT_extensions_string = 0;
+int GLAD_WGL_NV_DX_interop = 0;
 int GLAD_WGL_NV_DX_interop2 = 0;
 
 
 
+PFNWGLDXCLOSEDEVICENVPROC glad_wglDXCloseDeviceNV = NULL;
+PFNWGLDXLOCKOBJECTSNVPROC glad_wglDXLockObjectsNV = NULL;
+PFNWGLDXOBJECTACCESSNVPROC glad_wglDXObjectAccessNV = NULL;
+PFNWGLDXOPENDEVICENVPROC glad_wglDXOpenDeviceNV = NULL;
+PFNWGLDXREGISTEROBJECTNVPROC glad_wglDXRegisterObjectNV = NULL;
+PFNWGLDXSETRESOURCESHAREHANDLENVPROC glad_wglDXSetResourceShareHandleNV = NULL;
+PFNWGLDXUNLOCKOBJECTSNVPROC glad_wglDXUnlockObjectsNV = NULL;
+PFNWGLDXUNREGISTEROBJECTNVPROC glad_wglDXUnregisterObjectNV = NULL;
 PFNWGLGETEXTENSIONSSTRINGARBPROC glad_wglGetExtensionsStringARB = NULL;
 PFNWGLGETEXTENSIONSSTRINGEXTPROC glad_wglGetExtensionsStringEXT = NULL;
 
@@ -41,6 +50,17 @@ static void glad_wgl_load_WGL_ARB_extensions_string(GLADuserptrloadfunc load, vo
 static void glad_wgl_load_WGL_EXT_extensions_string(GLADuserptrloadfunc load, void *userptr) {
     if(!GLAD_WGL_EXT_extensions_string) return;
     glad_wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC) load(userptr, "wglGetExtensionsStringEXT");
+}
+static void glad_wgl_load_WGL_NV_DX_interop(GLADuserptrloadfunc load, void *userptr) {
+    if(!GLAD_WGL_NV_DX_interop) return;
+    glad_wglDXCloseDeviceNV = (PFNWGLDXCLOSEDEVICENVPROC) load(userptr, "wglDXCloseDeviceNV");
+    glad_wglDXLockObjectsNV = (PFNWGLDXLOCKOBJECTSNVPROC) load(userptr, "wglDXLockObjectsNV");
+    glad_wglDXObjectAccessNV = (PFNWGLDXOBJECTACCESSNVPROC) load(userptr, "wglDXObjectAccessNV");
+    glad_wglDXOpenDeviceNV = (PFNWGLDXOPENDEVICENVPROC) load(userptr, "wglDXOpenDeviceNV");
+    glad_wglDXRegisterObjectNV = (PFNWGLDXREGISTEROBJECTNVPROC) load(userptr, "wglDXRegisterObjectNV");
+    glad_wglDXSetResourceShareHandleNV = (PFNWGLDXSETRESOURCESHAREHANDLENVPROC) load(userptr, "wglDXSetResourceShareHandleNV");
+    glad_wglDXUnlockObjectsNV = (PFNWGLDXUNLOCKOBJECTSNVPROC) load(userptr, "wglDXUnlockObjectsNV");
+    glad_wglDXUnregisterObjectNV = (PFNWGLDXUNREGISTEROBJECTNVPROC) load(userptr, "wglDXUnregisterObjectNV");
 }
 
 
@@ -85,6 +105,7 @@ static GLADapiproc glad_wgl_get_proc_from_userptr(void *userptr, const char* nam
 static int glad_wgl_find_extensions_wgl(HDC hdc) {
     GLAD_WGL_ARB_extensions_string = glad_wgl_has_extension(hdc, "WGL_ARB_extensions_string");
     GLAD_WGL_EXT_extensions_string = glad_wgl_has_extension(hdc, "WGL_EXT_extensions_string");
+    GLAD_WGL_NV_DX_interop = glad_wgl_has_extension(hdc, "WGL_NV_DX_interop");
     GLAD_WGL_NV_DX_interop2 = glad_wgl_has_extension(hdc, "WGL_NV_DX_interop2");
     return 1;
 }
@@ -106,6 +127,7 @@ int gladLoadWGLUserPtr(HDC hdc, GLADuserptrloadfunc load, void *userptr) {
     if (!glad_wgl_find_extensions_wgl(hdc)) return 0;
     glad_wgl_load_WGL_ARB_extensions_string(load, userptr);
     glad_wgl_load_WGL_EXT_extensions_string(load, userptr);
+    glad_wgl_load_WGL_NV_DX_interop(load, userptr);
 
 
     return version;
